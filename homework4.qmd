@@ -27,7 +27,7 @@ subreddit_data <- find_thread_urls(subreddit = "Overwatch", sort_by = "top")
 
 ```{r}
 # Clean and tokenize the text
-corpus <- VCorpus(VectorSource(subreddit_data$title))
+corpus <- VCorpus(VectorSource(subreddit_data[["title"]]))
 corpus_clean <- tm_map(corpus, content_transformer(tolower))
 corpus_clean <- tm_map(corpus_clean, removeNumbers)
 corpus_clean <- tm_map(corpus_clean, removePunctuation)

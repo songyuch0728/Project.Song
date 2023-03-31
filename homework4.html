@@ -164,17 +164,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>subreddit_data <span class="ot">&lt;-</span> <span class="fu">find_thread_urls</span>(<span class="at">subreddit =</span> <span class="st">"Overwatch"</span>, <span class="at">sort_by =</span> <span class="st">"top"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>parsing URLs on page 1...
-parsing URLs on page 2...</code></pre>
+parsing URLs on page 2...
+parsing URLs on page 3...
+parsing URLs on page 4...</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in file(con, "r"): cannot open URL
-'https://www.reddit.com/r/Overwatch/top.json?t=month&amp;limit=100&amp;after=t3_122y3gu':
+'https://www.reddit.com/r/Overwatch/top.json?t=month&amp;limit=100&amp;after=t3_1238g46':
 HTTP status was '429 Unknown Error'</code></pre>
 </div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Clean and tokenize the text</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>corpus <span class="ot">&lt;-</span> <span class="fu">VCorpus</span>(<span class="fu">VectorSource</span>(subreddit_data<span class="sc">$</span>title))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>corpus <span class="ot">&lt;-</span> <span class="fu">VCorpus</span>(<span class="fu">VectorSource</span>(subreddit_data[[<span class="st">"title"</span>]]))</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>corpus_clean <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(corpus, <span class="fu">content_transformer</span>(tolower))</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>corpus_clean <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(corpus_clean, removeNumbers)</span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>corpus_clean <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(corpus_clean, removePunctuation)</span>
@@ -202,50 +204,58 @@ HTTP status was '429 Unknown Error'</code></pre>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>user_data <span class="ot">&lt;-</span> <span class="fu">get_user_content</span>(user)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>parsing user yzoes...
-parsing URLs on page 1...</code></pre>
+parsing URLs on page 1...
+parsing URLs on page 2...
+parsing URLs on page 3...
+parsing URLs on page 4...</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in file(con, "r"): cannot open URL
-'https://www.reddit.com/user/yzoes.json?limit=100': HTTP status was '429
-Unknown Error'</code></pre>
+'https://www.reddit.com/user/yzoes.json?limit=100&amp;after=t1_i93gziz': HTTP
+status was '429 Unknown Error'</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Clean and tokenize the text</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>corpus_user <span class="ot">&lt;-</span> <span class="fu">Corpus</span>(<span class="fu">VectorSource</span>(user_data[[<span class="st">"yzoes"</span>]]<span class="sc">$</span>comments))</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>corpus_user <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(corpus_user, <span class="fu">content_transformer</span>(tolower))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in file(con, "r"): cannot open URL
+'https://www.reddit.com/user/yzoes/about.json': HTTP status was '429 Unknown
+Error'</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Clean and tokenize the text</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>corpus_user <span class="ot">&lt;-</span> <span class="fu">Corpus</span>(<span class="fu">VectorSource</span>(user_data[[<span class="st">"yzoes"</span>]]<span class="sc">$</span>comments))</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>corpus_user <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(corpus_user, <span class="fu">content_transformer</span>(tolower))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in tm_map.SimpleCorpus(corpus_user, content_transformer(tolower)):
 transformation drops documents</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>corpus_user <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(corpus_user, removePunctuation)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>corpus_user <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(corpus_user, removePunctuation)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in tm_map.SimpleCorpus(corpus_user, removePunctuation): transformation
 drops documents</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>corpus_user <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(corpus_user, removeNumbers)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>corpus_user <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(corpus_user, removeNumbers)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in tm_map.SimpleCorpus(corpus_user, removeNumbers): transformation
 drops documents</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>corpus_user <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(corpus_user, removeWords, <span class="fu">stopwords</span>(<span class="st">"english"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>corpus_user <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(corpus_user, removeWords, <span class="fu">stopwords</span>(<span class="st">"english"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in tm_map.SimpleCorpus(corpus_user, removeWords, stopwords("english")):
 transformation drops documents</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate word frequencies</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>tdm_user <span class="ot">&lt;-</span> <span class="fu">TermDocumentMatrix</span>(corpus_user)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>tdm_user <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(tdm_user)</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>tdm_user <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(tdm_user)</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>tdm_user <span class="ot">&lt;-</span> <span class="fu">sort</span>(tdm_user, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize top words</span></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>top_words_user <span class="ot">&lt;-</span> <span class="fu">head</span>(tdm_user, <span class="dv">15</span>)</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(top_words_user) <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;&amp;</span> <span class="fu">any</span>(top_words_user <span class="sc">&gt;</span> <span class="dv">0</span>)) {</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">barplot</span>(top_words_user, <span class="at">las =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">main =</span> <span class="st">"Top Words in User's Comments"</span>)</span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"No valid data found for top_words_user. Please check the data source."</span>)</span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>No valid data found for top_words_user. Please check the data source.</code></pre>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate word frequencies</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>tdm_user <span class="ot">&lt;-</span> <span class="fu">TermDocumentMatrix</span>(corpus_user)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>tdm_user <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(tdm_user)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>tdm_user <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(tdm_user)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>tdm_user <span class="ot">&lt;-</span> <span class="fu">sort</span>(tdm_user, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize top words</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>top_words_user <span class="ot">&lt;-</span> <span class="fu">head</span>(tdm_user, <span class="dv">15</span>)</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(top_words_user) <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;&amp;</span> <span class="fu">any</span>(top_words_user <span class="sc">&gt;</span> <span class="dv">0</span>)) {</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">barplot</span>(top_words_user, <span class="at">las =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">main =</span> <span class="st">"Top Words in User's Comments"</span>)</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"No valid data found for top_words_user. Please check the data source."</span>)</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="homework4_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
