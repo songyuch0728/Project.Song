@@ -14,14 +14,69 @@ Quarto enables you to weave together content and executable code into a finished
 When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
 
 ```{r}
-1 + 1
-```
+library(NLP)
+library(RedditExtractoR)
+library(tidyverse)
+library(tm)
 
-You can add options to executable code like this
+```
 
 ```{r}
-#| echo: false
-2 * 2
+subreddit_data <- find_thread_urls(subreddit = "Overwatch", sort_by = "top")
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+```{r}
+# Clean and tokenize the text
+corpus <- VCorpus(VectorSource(subreddit_data$title))
+corpus_clean <- tm_map(corpus, content_transformer(tolower))
+corpus_clean <- tm_map(corpus_clean, removeNumbers)
+corpus_clean <- tm_map(corpus_clean, removePunctuation)
+corpus_clean <- tm_map(corpus_clean, stripWhitespace)
+corpus_clean <- tm_map(corpus_clean, removeWords, stopwords("english"))
+
+# Calculate word frequencies
+word_freqs <- TermDocumentMatrix(corpus_clean)
+word_freqs <- as.matrix(word_freqs)
+word_freqs <- sort(rowSums(word_freqs), decreasing = TRUE)
+word_freqs_df <- data.frame(word = names(word_freqs), freq = word_freqs)
+
+# Visualize top words
+top_words <- word_freqs_df[1:15, ]
+ggplot(top_words, aes(x = reorder(word, freq), y = freq)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Top Words in Chosen Subreddit", x = "Word", y = "Frequency")
+```
+
+```{r}
+user <- "yzoes"
+user_data <- get_user_content(user)
+
+# Clean and tokenize the text
+corpus_user <- Corpus(VectorSource(user_data[["yzoes"]]$comments))
+corpus_user <- tm_map(corpus_user, content_transformer(tolower))
+corpus_user <- tm_map(corpus_user, removePunctuation)
+corpus_user <- tm_map(corpus_user, removeNumbers)
+corpus_user <- tm_map(corpus_user, removeWords, stopwords("english"))
+
+# Calculate word frequencies
+tdm_user <- TermDocumentMatrix(corpus_user)
+tdm_user <- as.matrix(tdm_user)
+tdm_user <- rowSums(tdm_user)
+tdm_user <- sort(tdm_user, decreasing = TRUE)
+
+# Visualize top words
+top_words_user <- head(tdm_user, 15)
+if (length(top_words_user) > 0 && any(top_words_user > 0)) {
+  barplot(top_words_user, las = 2, col = "blue", main = "Top Words in User's Comments")
+} else {
+  cat("No valid data found for top_words_user. Please check the data source.")
+}
+
+
+```
+
+```{r}
+
+
+```
